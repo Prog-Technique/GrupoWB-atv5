@@ -6,7 +6,7 @@ import Header from '../../components/Header';
 import Title from '../../components/Title';
 import { toast } from 'react-toastify';
 
-import { FiHome } from 'react-icons/fi';
+import { FiEdit } from 'react-icons/fi';
 
 export default function Produto(){
   const { id } = useParams();
@@ -112,7 +112,7 @@ export default function Produto(){
 
       <div className="content">
         <Title name="Editar">
-          <FiHome color="#ecafb1" size={25}/>
+          <FiEdit color="#ecafb1" size={25}/>
         </Title>
 
         <div className="container">

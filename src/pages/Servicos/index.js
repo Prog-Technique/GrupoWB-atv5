@@ -5,9 +5,7 @@ import Header from '../../components/Header';
 import Title from '../../components/Title';
 import { toast } from 'react-toastify';
 
-import ModalDetalhes from '../../components/ModalDetalhes/servico';
-
-import { FiArchive, FiX, FiSearch, FiArrowRight } from "react-icons/fi";
+import { FiArchive, FiX, FiEdit3 } from "react-icons/fi";
 
 import { Link } from 'react-router-dom';
 
@@ -16,9 +14,8 @@ export default function Servicos(){
   const [nomeServico, setNomeServico] = useState('');
   const [precoServico, setPrecoServico] = useState('');
 
-  const [showPostModal, setShowPostModal] = useState(false);
-  const [detail, setDetail] = useState();
-  
+  const [total, setTotal] = useState();
+
   const listRef = firebase.firestore().collection('Servicos');
 
   async function cadastrarServico(e){
@@ -44,16 +41,18 @@ export default function Servicos(){
       await listRef
       .onSnapshot((doc)=>{
         let meusServicos = [];
+        let total_count = 0;
 
         doc.forEach((item)=>{
+          total_count = total_count + 1;
           meusServicos.push({
             id: item.id,
             nomeServico: item.data().nomeServico,
             precoServico: item.data().precoServico
           })
         });
-
         setOcorrencia(meusServicos);
+        setTotal(total_count);
 
       });
 
@@ -69,11 +68,6 @@ export default function Servicos(){
     .then(()=>{
       toast.error('Serviço excluido!');
     });
-  }
-
-  function togglePostModal(item){
-    setShowPostModal(!showPostModal);
-    setDetail(item);
   }
 
   return(
@@ -94,10 +88,13 @@ export default function Servicos(){
           </form>
         </div>
 
+        <i>Total: <strong>{total}</strong></i>
+
         <table>
           <thead>
             <tr>
               <th scope="col">Serviços cadastrados</th>
+              <th scope="col">Preço</th>
               <th scope="col">#</th>
             </tr>
           </thead>
@@ -106,13 +103,11 @@ export default function Servicos(){
               return(
                 <tr key={index}>
                   <td data-label="Serviço cadastrado">{item.nomeServico}</td>
+                  <td data-label="Preço">{item.precoServico}</td>
                   <td data-label="#">
-                    <button className="action" style={{backgroundColor: '#3583f6'}} onClick={ () => togglePostModal(item) }>
-                        <FiSearch color="#fff" size={17}/>
-                    </button>
-
+                    
                     <Link className="action" style={{backgroundColor: '#F6a935'}} to={`/servicos/${item.id}`}>
-                      <FiArrowRight color="#fff" size={17}/>
+                      <FiEdit3 color="#fff" size={17}/>
                     </Link>
 
                     <button className="action" style={{backgroundColor: '#f00'}} onClick={ () => excluirServico(item.id) }>
@@ -127,14 +122,6 @@ export default function Servicos(){
         </table>
         
       </div>
-
-      {showPostModal && (
-        <ModalDetalhes
-          conteudo={detail}
-          close={togglePostModal}
-        />
-      )}
-
     </div>
   )
 }

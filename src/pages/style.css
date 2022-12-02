@@ -36,10 +36,6 @@
     margin-bottom: 1em;
 }
 
-.linkCSV{
-    margin-left: 1em;
-}
-
 .school{
     display: flex;
     flex-direction: row;
@@ -67,6 +63,12 @@
     background-color: #fde5e6;
 }
 
+p{
+    text-align: center;
+    margin-bottom: 1em;
+    font-size: 1.5em;
+}
+
 table{
     border: 1px solid #ccc;
     border-collapse: collapse;
@@ -74,6 +76,7 @@ table{
     padding: 0;
     width: 100%;
     table-layout: fixed;
+    margin-bottom: 15px;
 }
 
 table caption{
@@ -116,6 +119,10 @@ table td .badge{
     padding: 3px;
     border-radius: 3px;
     color: #fff;
+}
+
+.selected{
+    max-width: 200px;
 }
 
 @media screen and (max-width: 600px) {

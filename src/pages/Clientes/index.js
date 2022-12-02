@@ -7,7 +7,10 @@ import Title from '../../components/Title';
 import { toast } from 'react-toastify';
 
 import ModalDetalhes from '../../components/ModalDetalhes/cliente';
-import { FiArchive, FiX, FiSearch, FiArrowRight } from "react-icons/fi";
+
+import { MdPeopleOutline } from "react-icons/md";
+import { FiArchive, FiClipboard, FiX, FiSearch, FiEdit3 } from "react-icons/fi";
+
 import { Link } from 'react-router-dom';
 
 export default function Clientes(){
@@ -25,6 +28,8 @@ export default function Clientes(){
   const [formValue, setFormValue] = useState([{ rg: "" }])
   const [formValue2, setFormValue2] = useState([{ dataRg: "" }])
   
+  const [total, setTotal] = useState();
+
   const listRef = firebase.firestore().collection('Clientes');
 
   async function cadastrarCliente(e){
@@ -62,15 +67,25 @@ export default function Clientes(){
       await listRef
       .onSnapshot((doc)=>{
         let meusClientes = [];
+        let total_count = 0;
 
         doc.forEach((item)=>{
+          total_count = total_count + 1;
           meusClientes.push({
             id: item.id,
-            nomeCliente: item.data().nomeCliente
+            nomeCliente: item.data().nomeCliente,
+            nomeSocial: item.data().nomeSocial,
+            genero: item.data().genero,
+            telefone: item.data().telefone,
+            cpf: item.data().cpf,
+            dataCpf: item.data().dataCpf,
+            rg: item.data().formValue,
+            dataRg: item.data().formValue2
           })
         });
 
         setOcorrencia(meusClientes);
+        setTotal(total_count);
 
       });
 
@@ -135,7 +150,7 @@ export default function Clientes(){
 
       <div className="content">
         <Title name="Cliente">
-          <FiArchive color="#d48e90" size={25}/>
+          <MdPeopleOutline color="#d48e90" size={25}/>
         </Title>
 
         <div className="container">
@@ -181,11 +196,14 @@ export default function Clientes(){
           </form>
         </div>
 
+        <i>Total: <strong>{total}</strong></i>
+
         <table>
           <thead>
             <tr>
               <th scope="col">Clientes cadastrados</th>
-              <th scope="col">#</th>
+              <th scope="col">Ações</th>
+              <th scope="col">Adicionar</th>
             </tr>
           </thead>
           <tbody>
@@ -193,18 +211,28 @@ export default function Clientes(){
               return(
                 <tr key={index}>
                   <td data-label="Cliente cadastrado">{item.nomeCliente}</td>
-                  <td data-label="#">
+                  <td data-label="Ações">
                     <button className="action" style={{backgroundColor: '#3583f6'}} onClick={ () => togglePostModal(item) }>
                         <FiSearch color="#fff" size={17}/>
                     </button>
 
                     <Link className="action" style={{backgroundColor: '#F6a935'}} to={`/clientes/${item.id}`}>
-                      <FiArrowRight color="#fff" size={17}/>
+                      <FiEdit3 color="#fff" size={17}/>
                     </Link>
 
                     <button className="action" style={{backgroundColor: '#f00'}} onClick={ () => excluirCliente(item.id) }>
                         <FiX color="#fff" size={17}/>
                     </button>
+                  </td>
+
+                  <td data-label="Adicionar">
+                    <Link className="action" style={{backgroundColor: '#F6a935'}} to={`/adicionar_produtos/${item.id}`}>
+                      <FiArchive color="#fff" size={17}/>
+                    </Link>
+
+                    <Link className="action" style={{backgroundColor: '#3583f6'}} to={`/adicionar_servicos/${item.id}`}>
+                      <FiClipboard color="#fff" size={17}/>
+                    </Link>
                   </td>
                 </tr>
               )

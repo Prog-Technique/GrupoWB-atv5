@@ -5,9 +5,7 @@ import Header from '../../components/Header';
 import Title from '../../components/Title';
 import { toast } from 'react-toastify';
 
-import ModalDetalhes from '../../components/ModalDetalhes/produto';
-
-import { FiArchive, FiX, FiSearch, FiArrowRight } from "react-icons/fi";
+import { FiArchive, FiX, FiEdit3 } from "react-icons/fi";
 
 import { Link } from 'react-router-dom';
 
@@ -15,10 +13,9 @@ export default function Produtos(){
   const [ocorrencia, setOcorrencia] = useState([]);
   const [nomeProduto, setNomeProduto] = useState('');
   const [precoProduto, setPrecoProduto] = useState('');
-
-  const [showPostModal, setShowPostModal] = useState(false);
-  const [detail, setDetail] = useState();
   
+  const [total, setTotal] = useState();
+
   const listRef = firebase.firestore().collection('Produtos');
 
   async function cadastrarProduto(e){
@@ -44,16 +41,18 @@ export default function Produtos(){
       await listRef
       .onSnapshot((doc)=>{
         let meusProdutos = [];
+        let total_count = 0;
 
         doc.forEach((item)=>{
+          total_count = total_count + 1;
           meusProdutos.push({
             id: item.id,
             nomeProduto: item.data().nomeProduto,
             precoProduto: item.data().precoProduto
           })
         });
-
         setOcorrencia(meusProdutos);
+        setTotal(total_count);
 
       });
 
@@ -69,11 +68,6 @@ export default function Produtos(){
     .then(()=>{
       toast.error('Produto excluido!');
     });
-  }
-
-  function togglePostModal(item){
-    setShowPostModal(!showPostModal);
-    setDetail(item);
   }
 
   return(
@@ -94,10 +88,13 @@ export default function Produtos(){
           </form>
         </div>
 
+        <i>Total: <strong>{total}</strong></i>
+
         <table>
           <thead>
             <tr>
               <th scope="col">Produtos cadastrados</th>
+              <th scope="col">Preço</th>
               <th scope="col">#</th>
             </tr>
           </thead>
@@ -106,13 +103,11 @@ export default function Produtos(){
               return(
                 <tr key={index}>
                   <td data-label="Produto cadastrado">{item.nomeProduto}</td>
+                  <td data-label="Preço">{item.precoProduto}</td>
                   <td data-label="#">
-                    <button className="action" style={{backgroundColor: '#3583f6'}} onClick={ () => togglePostModal(item) }>
-                        <FiSearch color="#fff" size={17}/>
-                    </button>
-
+                    
                     <Link className="action" style={{backgroundColor: '#F6a935'}} to={`/produtos/${item.id}`}>
-                      <FiArrowRight color="#fff" size={17}/>
+                      <FiEdit3 color="#fff" size={17}/>
                     </Link>
 
                     <button className="action" style={{backgroundColor: '#f00'}} onClick={ () => excluirProduto(item.id) }>
@@ -127,14 +122,6 @@ export default function Produtos(){
         </table>
         
       </div>
-
-      {showPostModal && (
-        <ModalDetalhes
-          conteudo={detail}
-          close={togglePostModal}
-        />
-      )}
-
     </div>
   )
 }

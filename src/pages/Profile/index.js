@@ -9,7 +9,6 @@ import Title from '../../components/Title';
 import logo from '../../assets/logo.png';
 
 import { MdAccountCircle } from "react-icons/md";
-import { toast } from 'react-toastify';
 
 export default function Profile(){
     

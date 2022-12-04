@@ -125,6 +125,12 @@ table td .badge{
     max-width: 200px;
 }
 
+.vertical{
+    display: flex;
+    flex-direction: column;
+}
+
+
 @media screen and (max-width: 600px) {
     table{
         border: 0;

@@ -21,32 +21,39 @@ export default function Clientes(){
   const [telefone, setTelefone] = useState('');
   const [cpf, setCpf] = useState('');
   const [dataCpf, setDataCpf] = useState('');
+  const [rg, setRg] = useState('');
+  const [dataRg, setDataRg] = useState('');
 
   const [showPostModal, setShowPostModal] = useState(false);
   const [detail, setDetail] = useState();
 
-  const [formValue, setFormValue] = useState([{ rg: "" }])
-  const [formValue2, setFormValue2] = useState([{ dataRg: "" }])
+  // const [formValue, setFormValue] = useState([{ rg: "" }])
+  // const [formValue2, setFormValue2] = useState([{ dataRg: "" }])
   
   const [total, setTotal] = useState();
 
   const listRef = firebase.firestore().collection('Clientes');
-
   async function cadastrarCliente(e){
     e.preventDefault();
 
     if(nomeCliente === ''){
       toast.error('Você deve fornecer o nome do cliente!');
     }else{
-      await listRef.add({
+      await listRef.doc(cpf).set({
         nomeCliente: nomeCliente,
         nomeSocial: nomeSocial,
         genero: genero,
         telefone: telefone,
         cpf: cpf,
         dataCpf: dataCpf,
-        rg: formValue,
-        dataRg: formValue2
+        rg: rg,
+        dataRg: dataRg,
+        valorGastoPro: 0,
+        valorGastoSer: 0,
+        valorTotal: 0,
+        quantProd: 0,
+        quantSer: 0,
+        quantTotal: 0
       });
       toast.success('Cliente cadastrado');
     }
@@ -57,8 +64,10 @@ export default function Clientes(){
     setTelefone('');
     setCpf('');
     setDataCpf('');
-    setFormValue('');
-    setFormValue2('');
+    setRg('');
+    setDataRg('');
+    // setFormValue('');
+    // setFormValue2('');
   }
 
   useEffect(()=> {
@@ -79,8 +88,8 @@ export default function Clientes(){
             telefone: item.data().telefone,
             cpf: item.data().cpf,
             dataCpf: item.data().dataCpf,
-            rg: item.data().formValue,
-            dataRg: item.data().formValue2
+            rg: item.data().rg,
+            dataRg: item.data().dataRg
           })
         });
 
@@ -112,37 +121,37 @@ export default function Clientes(){
     setGenero(e.target.value);
   }
 
-  let handleChange = (i, e) => {
-    let newFormValue = [...formValue];
-    newFormValue[i][e.target.name] = e.target.value;
-    setFormValue(newFormValue);
-  }
+  // let handleChange = (i, e) => {
+  //   let newFormValue = [...formValue];
+  //   newFormValue[i][e.target.name] = e.target.value;
+  //   setFormValue(newFormValue);
+  // }
 
-  let addFormField = () => {
-    setFormValue([...formValue, { rg: "" }])
-  }
+  // let addFormField = () => {
+  //   setFormValue([...formValue, { rg: "" }])
+  // }
 
-  let removeFormField = (i) => {
-    let newFormValue = [...formValue];
-    newFormValue.splice(i, 1);
-    setFormValue(newFormValue)
-  }
+  // let removeFormField = (i) => {
+  //   let newFormValue = [...formValue];
+  //   newFormValue.splice(i, 1);
+  //   setFormValue(newFormValue)
+  // }
 
-  let handleChange2 = (i, e) => {
-    let newFormValue2 = [...formValue2];
-    newFormValue2[i][e.target.name] = e.target.value;
-    setFormValue2(newFormValue2);
-  }
+  // let handleChange2 = (i, e) => {
+  //   let newFormValue2 = [...formValue2];
+  //   newFormValue2[i][e.target.name] = e.target.value;
+  //   setFormValue2(newFormValue2);
+  // }
 
-  let addFormField2 = () => {
-    setFormValue2([...formValue2, { dataRg: "" }])
-  }
+  // let addFormField2 = () => {
+  //   setFormValue2([...formValue2, { dataRg: "" }])
+  // }
 
-  let removeFormField2 = (i) => {
-    let newFormValue2 = [...formValue2];
-    newFormValue2.splice(i, 1);
-    setFormValue2(newFormValue2)
-  }
+  // let removeFormField2 = (i) => {
+  //   let newFormValue2 = [...formValue2];
+  //   newFormValue2.splice(i, 1);
+  //   setFormValue2(newFormValue2)
+  // }
 
   return(
     <div>
@@ -166,7 +175,11 @@ export default function Clientes(){
             <input type="text" placeholder="Telefone" value={telefone} onChange={ (e) => setTelefone(e.target.value) } />
             <input type="text" placeholder="CPF" value={cpf} onChange={ (e) => setCpf(e.target.value) } />
             <input type="text" placeholder="Data de emissão do CPF" value={dataCpf} onChange={ (e) => setDataCpf(e.target.value) } />
-            {formValue.map((e, index) => (
+            <input type="text" placeholder="RG" value={rg} onChange={ (e) => setRg(e.target.value) } />
+            <input type="text" placeholder="Data de emissão do RG" value={dataRg} onChange={ (e) => setDataRg(e.target.value) } />
+            
+            
+            {/* {formValue.map((e, index) => (
             <>
               <div className='school' key={index}>
                 <input placeholder='RG' name='rg' value={e.rg} onChange={e => handleChange(index, e)} />
@@ -187,10 +200,10 @@ export default function Clientes(){
                   : null}
               </div>
             </>
-            ))}
+            ))} */}
             
-            <button className="add" type="button" onClick={() => addFormField()}>Adicionar mais um RG</button>
-            <button className="add" type="button" onClick={() => addFormField2()}>Adicionar mais uma data de emissão do RG</button>
+            {/* <button className="add" type="button" onClick={() => addFormField()}>Adicionar mais um RG</button>
+            <button className="add" type="button" onClick={() => addFormField2()}>Adicionar mais uma data de emissão do RG</button> */}
 
             <button className="submit" onClick={cadastrarCliente}>Cadastrar</button>
           </form>

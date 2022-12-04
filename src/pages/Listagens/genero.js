@@ -11,7 +11,7 @@ import { FiCalendar } from "react-icons/fi";
 
 export default function Genero() {
 
-  const [opcao, setOpcao] = useState('');
+  const [opcao, setOpcao] = useState('escolha');
   const [listagem, setListagem] = useState([]);
   const [total, setTotal] = useState();
 

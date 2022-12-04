@@ -1,5 +1,3 @@
-import { useState, useEffect } from 'react';
-
 import firebase from '../../services/firebaseConnection';
 
 import Header from '../../components/Header';

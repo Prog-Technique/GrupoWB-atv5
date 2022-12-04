@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import firebase from '../../services/firebaseConnection';
 
 import { useParams } from 'react-router-dom';
@@ -18,11 +18,14 @@ export default function Produtos() {
   const [ocorrencia2, setOcorrencia2] = useState([]);
   const [nomeProduto, setNomeProduto] = useState("");
   const [precoProduto, setPrecoProduto] = useState("");
+  const [totalItems, setTotalItems] = useState("");
 
-  const [total, setTotal] = useState();
+  // const [total, setTotal] = useState();
 
   const listRef = firebase.firestore().collection('Produtos');
-  const listRef2 = firebase.firestore().collection('Clientes');
+  const listRef2 = firebase.firestore().collection('Clientes').where('cpf', '==', id);
+
+  // const totalParse = parseInt(totalItems)
 
   useEffect(() => {
 
@@ -36,7 +39,7 @@ export default function Produtos() {
               id: item.id,
               nomeProduto: item.data().nomeProduto,
               precoProduto: item.data().precoProduto
-            });;
+            });
 
           });
 
@@ -45,12 +48,6 @@ export default function Produtos() {
         });
 
     }
-
-    loadProdutos();
-
-  }, []);
-
-  useEffect(() => {
 
     async function loadProdutos2() {
       await listRef2
@@ -63,40 +60,54 @@ export default function Produtos() {
             meusProdutos2.push({
               id: item.id,
               produto: item.data().produto,
-              precoProd: item.data().precoProd,
-              quantProd: item.data().quantProd
+              precoProd: item.data().precoProd
+              // quantProd: item.data().quantProd
             });
 
           });
 
           setOcorrencia2(meusProdutos2);
-          setTotal(total_count);
+          // setTotal(total_count);
 
         });
 
     }
 
+    loadProdutos();
     loadProdutos2();
 
   }, []);
+
+
 
   async function adicionarProduto(id) {
 
     await firebase.firestore().collection('Clientes').doc(id2).update({
       produto: firebase.firestore.FieldValue.arrayUnion(nomeProduto),
       precoProd: firebase.firestore.FieldValue.arrayUnion(precoProduto),
-    
+      // quantProd: totalParse + 1
     });
+
+    // await firebase.firestore().collection('Clientes').doc(id2).get()
+    // .then((snapshot) => {
+    //   setTotalItems(snapshot.data().quantProd);
+    // });
 
     await firebase.firestore().collection('Produtos').doc(id).get()
-    .then((snapshot) => {
-      setNomeProduto(snapshot.data().nomeProduto);
-      setPrecoProduto(snapshot.data().precoProduto);
-    });
+      .then((snapshot) => {
+        setNomeProduto(snapshot.data().nomeProduto);
+        setPrecoProduto(snapshot.data().precoProduto);
+      });
 
-    toast.success('Produto adicionado');
+    toast.success('Produto adicionado, para aparecer clique de novo!');
   }
 
+  // var produtos = 0
+  // console.log(ocorrencia2.length);
+  // if (ocorrencia2.length > 0) {
+  //   var coisas = ocorrencia2[0]
+  //   produtos = coisas.produto
+  // }
 
   return (
     <div>
@@ -113,21 +124,29 @@ export default function Produtos() {
           <thead>
             <tr>
               <th scope="col">Produto</th>
-              <th scope="col">Preço</th>
             </tr>
           </thead>
           <tbody>
-            {ocorrencia2.map((item, index) => {
+          {ocorrencia2.map((item, index) => {
               return (
                 <tr key={index}>
                   <td data-label="Produto cadastrado">{item.produto}</td>
-                  <td data-label="Preço">{item.precoProd}</td>
                 </tr>
               )
             })}
+
+            {/* <tr>
+            {produtos!== 0 && produtos.map((item) => {
+              return (
+                
+                  <td className='vertical'  data-label="Produto">{item}</td>
+                
+              )
+            })}
+            </tr> */}
           </tbody>
         </table>
-        <i>Total: <strong>{total}</strong></i>
+        {/* <i>Total: <strong>{total}</strong></i> */}
 
         <p>Produtos Cadastrados</p>
 

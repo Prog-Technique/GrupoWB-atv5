@@ -5,7 +5,7 @@ import Header from '../../components/Header';
 import Title from '../../components/Title';
 import { toast } from 'react-toastify';
 
-import { FiArchive, FiX, FiEdit3 } from "react-icons/fi";
+import { FiClipboard, FiX, FiEdit3 } from "react-icons/fi";
 
 import { Link } from 'react-router-dom';
 
@@ -76,7 +76,7 @@ export default function Servicos(){
 
       <div className="content">
         <Title name="Serviço">
-          <FiArchive color="#d48e90" size={25}/>
+          <FiClipboard color="#d48e90" size={25}/>
         </Title>
 
         <div className="container">

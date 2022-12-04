@@ -1,5 +1,5 @@
 import '../style.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import firebase from '../../services/firebaseConnection';
 
 import Header from '../../components/Header';
@@ -11,71 +11,116 @@ import { FiCalendar } from "react-icons/fi";
 
 export default function SPGenero() {
 
-  const [opcao, setOpcao] = useState('');
-  const [opcao2, setOpcao2] = useState('');
-  const [listagem, setListagem] = useState([]);
-  const [total, setTotal] = useState();
+  const [listagem1, setListagem1] = useState([]);
+  const [listagem2, setListagem2] = useState([]);
+  const [listagem3, setListagem3] = useState([]);
+  const [listagem4, setListagem4] = useState([]);
+  const [total1, setTotal1] = useState();
+  const [total2, setTotal2] = useState();
+  const [total3, setTotal3] = useState();
+  const [total4, setTotal4] = useState();
 
-  async function listaGenero(e) {
-    e.preventDefault();
-    if (opcao === 'escolha' || opcao2 === 'escolha') {
-      toast.error('Faça as escolhas')
-    } else {
-      if (opcao == 'Feminino') {
-        firebase.firestore().collection('Clientes')
-          .where('genero', '==',  opcao)
-          .get()
-          .then((snapshot) => {
-            let lista = [];
-            let total_count = 0;
-            snapshot.forEach((doc) => {
-              total_count = total_count + 1;
-              lista.push({
-                id: doc.id,
-                nomeCliente: doc.data().nomeCliente,
-                genero: doc.data().genero
-              });
+  useEffect(() => {
+    async function listaGeral1() {
+      firebase.firestore().collection('Produtos')
+        .orderBy('quanConsuPro', 'desc')
+        .get()
+        .then((snapshot) => {
+          let lista = [];
+          let total_count = 0;
+          snapshot.forEach((doc) => {
+            total_count = total_count + 1;
+            lista.push({
+              id: doc.id,
+              nomeProduto: doc.data().nomeProduto,
+              quanConsuPro: doc.data().quanConsuPro
             });
-            setListagem(lista);
-            setTotal(total_count);
-          })
-          .catch(() => {
-            toast.error('Ops! Aconteceu algo inesperado.')
           });
-      } else {
-        if (opcao == 'Masculino') {
-          firebase.firestore().collection('Clientes')
-            .where('genero', '==',  opcao)
-            .get()
-            .then((snapshot) => {
-              let lista = [];
-              let total_count = 0;
-              snapshot.forEach((doc) => {
-                total_count = total_count + 1;
-                lista.push({
-                  id: doc.id,
-                  nomeCliente: doc.data().nomeCliente,
-                  genero: doc.data().genero
-                });
-              });
-              setListagem(lista);
-              setTotal(total_count);
-            })
-            .catch(() => {
-              toast.error('Ops! Aconteceu algo inesperado.')
-            });
-        }
-      }
+          setListagem1(lista);
+          setTotal1(total_count);
+        })
+        .catch(() => {
+          toast.error('Ops! Aconteceu algo inesperado.')
+        });
     }
-  }
 
-  function handleChangeSelect(e) {
-    setOpcao(e.target.value);
-  }
+    async function listaGeral2() {
+      firebase.firestore().collection('Servicos')
+        .orderBy('quanConsuSer', 'desc')
+        .get()
+        .then((snapshot) => {
+          let lista = [];
+          let total_count = 0;
+          snapshot.forEach((doc) => {
+            total_count = total_count + 1;
+            lista.push({
+              id: doc.id,
+              nomeServico: doc.data().nomeServico,
+              quanConsuSer: doc.data().quanConsuSer
+            });
+          });
+          setListagem2(lista);
+          setTotal2(total_count);
+        })
+        .catch(() => {
+          toast.error('Ops! Aconteceu algo inesperado.')
+        });
+    }
 
-  function handleChangeSelect2(e) {
-    setOpcao2(e.target.value);
-  }
+    async function listaGeral3() {
+      firebase.firestore().collection('Produtos')
+        .orderBy('valorConsuPro', 'desc')
+        .get()
+        .then((snapshot) => {
+          let lista = [];
+          let total_count = 0;
+          snapshot.forEach((doc) => {
+            total_count = total_count + 1;
+            lista.push({
+              id: doc.id,
+              nomeProduto: doc.data().nomeProduto,
+              valorConsuPro: doc.data().valorConsuPro
+            });
+          });
+          setListagem3(lista);
+          setTotal3(total_count);
+        })
+        .catch(() => {
+          toast.error('Ops! Aconteceu algo inesperado.')
+        });
+    }
+
+    async function listaGeral4() {
+      firebase.firestore().collection('Servicos')
+        .orderBy('valorConsuSer', 'desc')
+        .get()
+        .then((snapshot) => {
+          let lista = [];
+          let total_count = 0;
+          snapshot.forEach((doc) => {
+            total_count = total_count + 1;
+            lista.push({
+              id: doc.id,
+              nomeServico: doc.data().nomeServico,
+              valorConsuSer: doc.data().valorConsuSer
+            });
+          });
+          setListagem4(lista);
+          setTotal4(total_count);
+        })
+        .catch(() => {
+          toast.error('Ops! Aconteceu algo inesperado.')
+        });
+    }
+
+    
+
+    listaGeral1();
+    listaGeral2();
+    listaGeral3();
+    listaGeral4();
+
+  }, []);
 
   return (
     <div>
@@ -86,39 +131,82 @@ export default function SPGenero() {
           <FiCalendar color="#d48e90" size={25} />
         </Title>
 
-        <div className="container">
-          <form className="form-student">
-            <label>Pesquisa por gênero:</label>
-            <select value={opcao} onChange={handleChangeSelect} className="selected">
-              <option value="escolha">Escolha</option>
-              <option value="Feminino">Feminino</option>
-              <option value="Masculino">Masculino</option>
-            </select><br/>
+        <p>Serviços ou produtos mais consumidos por gênero</p>
 
-            <label>Consumidos de:</label>
-            <select value={opcao2} onChange={handleChangeSelect2} className="selected">
-              <option value="escolha">Escolha</option>
-              <option value="Feminino">Serviços</option>
-              <option value="Masculino">Produtos</option>
-            </select>
-
-            <button className='submit' onClick={listaGenero}>Procurar</button>
-          </form>
-        </div>
-
-
-        <i>Total: <strong>{total}</strong></i>
+        <i>Total: <strong>{total1}</strong></i>
         <table id="dataTable">
           <thead>
             <tr>
-              <th scope="col">Resultado</th>
+              <th scope="col">Produto</th>
+              <th scope="col">Quantidade</th>
             </tr>
           </thead>
           <tbody>
-            {listagem.map((item, index) => {
+            {listagem1.map((item, index) => {
               return (
                 <tr key={index}>
-                  <td data-label="Resultado">{item.nomeCliente}</td>
+                  <td data-label="Produto">{item.nomeProduto}</td>
+                  <td data-label="Quantidade">{item.quanConsuPro}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+
+        <i>Total: <strong>{total2}</strong></i>
+        <table id="dataTable">
+          <thead>
+            <tr>
+              <th scope="col">Serviço</th>
+              <th scope="col">Quantidade</th>
+            </tr>
+          </thead>
+          <tbody>
+            {listagem2.map((item, index) => {
+              return (
+                <tr key={index}>
+                  <td data-label="Serviço">{item.nomeServico}</td>
+                  <td data-label="Quantidade">{item.quanConsuSer}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+
+        <i>Total: <strong>{total3}</strong></i>
+        <table id="dataTable">
+          <thead>
+            <tr>
+              <th scope="col">Produto</th>
+              <th scope="col">Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            {listagem3.map((item, index) => {
+              return (
+                <tr key={index}>
+                  <td data-label="Produto">{item.nomeProduto}</td>
+                  <td data-label="Valor">{item.valorConsuPro}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+
+        <i>Total: <strong>{total4}</strong></i>
+        <table id="dataTable">
+          <thead>
+            <tr>
+              <th scope="col">Serviço</th>
+              <th scope="col">Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            {listagem4.map((item, index) => {
+              return (
+                <tr key={index}>
+                  <td data-label="Serviço">{item.nomeServico}</td>
+                  <td data-label="Valor">{item.valorConsuSer}</td>
                 </tr>
               )
             })}

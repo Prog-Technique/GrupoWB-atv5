@@ -2,10 +2,13 @@
     <h1> Aplicação web para o Grupo WB </h1>
     <h3> Acesse o site pelo link: https://grupowb.netlify.app/ </h3>
     - Documento: (https://github.com/Prog-Technique/atv5/files/10147646/atvv.pdf)
-
-
 </div>
 
+<br>
+
+## :mag_right: Sobre o projeto
+Desenvolvimento de um site com o CRUD (Create, Read, Update, Delete) de clientes, produtos e serviços. Possuindo várias listagens para observar os consumos e possuindo também, relacionamento dos produtos e serviços para os cliente.
+ 
 <br>
 
 ## 🛠️ Tecnologia
